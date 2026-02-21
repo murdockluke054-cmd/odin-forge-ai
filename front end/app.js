@@ -12,7 +12,7 @@ generateBtn.addEventListener("click", async () => {
   statusBox.textContent = "Forging your project...";
 
   try {
-    const response = await fetch("http://localhost:3001/generate", {
+    const response = await fetch("http://localhost:5050/generate", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
