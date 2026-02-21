@@ -1,11 +1,11 @@
 import express from "express";
 import cors from "cors";
 import { generateProject } from "./generator.js";
-import { createZip } from "./zipper.js";
+import { zipProject } from "./zipper.js";
 
 const app = express();
 app.use(cors());
-app.use(express.json({ limit: "2mb" }));
+app.use(express.json());
 
 app.post("/generate", async (req, res) => {
   try {
@@ -15,23 +15,21 @@ app.post("/generate", async (req, res) => {
       return res.status(400).json({ error: "Missing spec" });
     }
 
-    // Generate file structure + code
-    const files = await generateProject(spec);
-
-    // Create ZIP buffer
-    const zipBuffer = await createZip(files);
+    const projectFiles = await generateProject(spec);
+    const zipBuffer = await zipProject(projectFiles);
 
     res.set({
       "Content-Type": "application/zip",
-      "Content-Disposition": "attachment; filename=project.zip",
+      "Content-Disposition": "attachment; filename=project.zip"
     });
 
-    return res.send(zipBuffer);
+    res.send(zipBuffer);
   } catch (err) {
-    console.error("Generation error:", err);
+    console.error("Error generating project:", err);
     res.status(500).json({ error: "Internal server error" });
   }
 });
 
-const PORT = 3001;
-app.listen(PORT, () => console.log(`Odin Forge AI backend running on ${PORT}`));
+app.listen(5050, () => {
+  console.log("Odin Forge AI backend running on port 5050");
+});

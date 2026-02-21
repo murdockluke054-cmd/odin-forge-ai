@@ -1,15 +1,11 @@
 import JSZip from "jszip";
 
-export async function createZip(files) {
+export async function zipProject(files) {
   const zip = new JSZip();
 
-  // Loop through the file tree and add each file
-  for (const filePath in files) {
-    zip.file(filePath, files[filePath]);
+  for (const [filename, content] of Object.entries(files)) {
+    zip.file(filename, content);
   }
 
-  // Generate ZIP as a Node buffer
-  const zipBuffer = await zip.generateAsync({ type: "nodebuffer" });
-
-  return zipBuffer;
+  return await zip.generateAsync({ type: "nodebuffer" });
 }
